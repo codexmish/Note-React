@@ -7,6 +7,7 @@ import {
   updateProfile,
   sendEmailVerification,
 } from "firebase/auth";
+import { Bounce, toast } from "react-toastify";
 
 const Register = () => {
   const ragex = {
@@ -50,15 +51,23 @@ const Register = () => {
       .then((userCredential) => {
         // update username
 
-        console.log(userCredential);
-
         updateProfile(auth.currentUser, {
           displayName: formdata.username,
         })
           .then(() => {
             sendEmailVerification(auth.currentUser).then(() => {
               // Email verification sent!
-              console.log('sent')
+              toast.success("Verification Email Sent", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+              });
               // ...
             });
           })
@@ -71,8 +80,24 @@ const Register = () => {
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
+
+        if (errorCode == "auth/email-already-in-use") {
+          toast.error("email-already-in-use", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        }
         // ..
       });
+
+
   };
 
   return (
