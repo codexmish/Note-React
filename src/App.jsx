@@ -12,6 +12,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Bin from "./pages/Bin";
+import app from "./firebase.config";
 
 const App = () => {
   const myRoute = createBrowserRouter(

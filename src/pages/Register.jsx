@@ -1,55 +1,141 @@
-import React from "react";
+import React, { useState } from "react";
+import CommonHead from "../components/Common/CommonHead";
+import { Link } from "react-router";
 
 const Register = () => {
+  const ragex = {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    pass: /^.{6,}$/,
+  };
+
+  const [formdata, setFormData] = useState({
+    email: "null",
+    password: "",
+    username: "",
+  });
+
+  console.log(formdata);
+
+  const [allError, setAllError] = useState({
+    emailError: "border-border",
+    nameError: "border-border",
+    passwordError: "border-border",
+  });
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    if (!ragex.email.test(formdata.email) || !formdata.email) {
+      setAllError((prev) => ({ ...prev, emailError: "border-red-500" }));
+    }
+    if (!ragex.pass.test(formdata.password) || !formdata.password) {
+      setAllError((prev) => ({ ...prev, passwordError: "border-red-500" }));
+    }
+    if (!formdata.username) {
+      return setAllError((prev) => ({
+        ...prev,
+        nameError: "border-red-500",
+      }));
+    }
+  };
+
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-        <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
-          <h2 className="text-2xl font-semibold text-center mb-6">
-            Create Account
-          </h2>
-          <form className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Username</label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring focus:ring-gray-200"
-                placeholder="Enter username"
-              />
-            </div>
+      <section className="flex items-center justify-center mt-10 mb-18">
+        <div>
+          <div className="text-center mb-15">
+            <CommonHead text1={"Register"} />
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Email</label>
-              <input
-                type="email"
-                className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring focus:ring-gray-200"
-                placeholder="Enter email"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-1">Password</label>
-              <input
-                type="password"
-                className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring focus:ring-gray-200"
-                placeholder="Enter password"
-              />
-            </div>
-
-            <button
-              type="button"
-              className="w-full bg-black text-white py-3 rounded-xl mt-2 hover:opacity-90 transition"
+          <div>
+            <form
+              onSubmit={handleRegister}
+              className="flex flex-col gap-6"
+              action=""
             >
-              Register
-            </button>
-          </form>
+              <div>
+                <label className="text-base text-black font-popppind font-semibold mb-2">
+                  Username
+                </label>
+                <div
+                  className={`w-[440px] h-11 border ${allError.nameError} flex items-center rounded-[12px]`}
+                >
+                  <input
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        username: e.target.value,
+                      }));
+                    }}
+                    className="text-base text-black font-popppind font-normal border-none outline-none w-full ml-4"
+                    type="text"
+                  />
+                </div>
+              </div>
 
-          <p className="text-center text-sm mt-4 text-gray-600">
+              <div>
+                <label className="text-base text-black font-popppind font-semibold mb-2">
+                  Email
+                </label>
+                <div
+                  className={`w-[440px] h-11 border ${allError.emailError} flex items-center rounded-[12px]`}
+                >
+                  <input
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        email: e.target.value,
+                      }));
+                    }}
+                    className="text-base text-black font-popppind font-normal border-none outline-none ml-4"
+                    type="email"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-base text-black font-popppind font-semibold mb-2">
+                  Password
+                </label>
+                <div
+                  className={`w-[440px] h-11 border ${allError.passwordError} flex items-center rounded-[12px]`}
+                >
+                  <input
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        password: e.target.value,
+                      }));
+                    }}
+                    className="text-base text-black font-popppind font-normal border-none outline-none ml-4"
+                    type="password"
+                  />
+                </div>
+              </div>
+
+              <button className="w-[440px] h-13 rounded-[9999px] bg-black text-base text-white font-medium font-popppind">
+                Continue
+              </button>
+            </form>
+          </div>
+
+          <div className="mt-6 mb-6 flex items-center justify-between w-[440px]">
+            <div className="br1 w-[200px] border-b border-border"></div>
+            <h2 className="text-sm text-black font-medium font-popppind">OR</h2>
+            <div className="br2 w-[200px] border-b border-border"></div>
+          </div>
+
+          <div className="mt-6 text-center text-base text-[#4B5563] font-popppind font-normal">
             Already have an account?{" "}
-            <span className="text-black font-medium cursor-pointer">Login</span>
-          </p>
+            <Link
+              to={"/login"}
+              className="text-[#0EA5E9] font-medium link-theme"
+            >
+              Login
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
     </>
   );
 };
