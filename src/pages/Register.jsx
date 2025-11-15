@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import CommonHead from "../components/Common/CommonHead";
 import { Link } from "react-router";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
 
 const Register = () => {
   const ragex = {
@@ -9,7 +15,7 @@ const Register = () => {
   };
 
   const [formdata, setFormData] = useState({
-    email: "null",
+    email: "",
     password: "",
     username: "",
   });
@@ -21,6 +27,8 @@ const Register = () => {
     nameError: "border-border",
     passwordError: "border-border",
   });
+
+  const auth = getAuth();
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -37,6 +45,34 @@ const Register = () => {
         nameError: "border-red-500",
       }));
     }
+
+    createUserWithEmailAndPassword(auth, formdata.email, formdata.password)
+      .then((userCredential) => {
+        // update username
+
+        console.log(userCredential);
+
+        updateProfile(auth.currentUser, {
+          displayName: formdata.username,
+        })
+          .then(() => {
+            sendEmailVerification(auth.currentUser).then(() => {
+              // Email verification sent!
+              console.log('sent')
+              // ...
+            });
+          })
+          .catch((error) => {
+            // An error occurred
+            // ...
+          });
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ..
+      });
   };
 
   return (
@@ -67,7 +103,7 @@ const Register = () => {
                         username: e.target.value,
                       }));
                     }}
-                    className="text-base text-black font-popppind font-normal border-none outline-none w-full ml-4"
+                    className="text-base w-full text-black font-popppind font-normal border-none outline-none w-full ml-4"
                     type="text"
                   />
                 </div>
@@ -87,7 +123,7 @@ const Register = () => {
                         email: e.target.value,
                       }));
                     }}
-                    className="text-base text-black font-popppind font-normal border-none outline-none ml-4"
+                    className="text-base w-full text-black font-popppind font-normal border-none outline-none ml-4"
                     type="email"
                   />
                 </div>
@@ -107,13 +143,13 @@ const Register = () => {
                         password: e.target.value,
                       }));
                     }}
-                    className="text-base text-black font-popppind font-normal border-none outline-none ml-4"
+                    className="text-base w-full text-black font-popppind font-normal border-none outline-none ml-4"
                     type="password"
                   />
                 </div>
               </div>
 
-              <button className="w-[440px] h-13 rounded-[9999px] bg-black text-base text-white font-medium font-popppind">
+              <button className="w-[440px] cursor-pointer h-13 rounded-[9999px] bg-black text-base text-white font-medium font-popppind">
                 Continue
               </button>
             </form>
