@@ -4,6 +4,8 @@ import { getDatabase, onValue, push, ref, set } from "firebase/database";
 const Home = () => {
   const [inputData, setInputData] = useState("");
 
+  const [realtimedata, setRealtimeData] = useState([]);
+
   const db = getDatabase();
 
   const handalSubmit = (e) => {
@@ -20,13 +22,12 @@ const Home = () => {
 
   useEffect(() => {
     onValue(ref(db, "users/"), (snapshot) => {
+      let myArr = [];
 
-      let myArr = []
-      const data = snapshot.val();
-      data.forEach((item)=>{
-        myArr.push(item)
-      })
-      console.log(myArr)
+      snapshot.forEach((item) => {
+        myArr.push(item.val());
+      });
+      setRealtimeData(myArr);
     });
   }, []);
 
@@ -41,6 +42,13 @@ const Home = () => {
           />
           <button>Go</button>
         </form>
+        <div>
+          {
+          realtimedata.map((item) => (
+            <h1 className="text-2xl text-black font-bold">{item.data}</h1>
+          ))
+          }
+        </div>
       </div>
     </>
   );
