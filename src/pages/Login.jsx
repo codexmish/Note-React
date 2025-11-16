@@ -1,22 +1,16 @@
 import React, { useState } from "react";
 import CommonHead from "../components/Common/CommonHead";
-import { Link } from "react-router";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  sendEmailVerification,
-} from "firebase/auth";
+import { Link, useNavigate } from "react-router";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { Bounce, toast } from "react-toastify";
 
 const Login = () => {
-
   const [formdata, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  console.log(formdata);
+  const navigate = useNavigate();
 
   const [allError, setAllError] = useState({
     emailError: "border-border",
@@ -32,9 +26,63 @@ const Login = () => {
       setAllError((prev) => ({ ...prev, emailError: "border-red-500" }));
     }
     if (!formdata.password) {
-      return setAllError((prev) => ({ ...prev, passwordError: "border-red-500" }));
+      return setAllError((prev) => ({
+        ...prev,
+        passwordError: "border-red-500",
+      }));
     }
 
+    signInWithEmailAndPassword(auth, formdata.email, formdata.password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+
+        if (user.emailVerified === false) {
+          toast.warning("Please verify your email address", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else {
+          toast.success("Login Success", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+
+          navigate("/");
+        }
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode) {
+          toast.error("Something went wrong", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        }
+      });
   };
 
   return (
@@ -51,7 +99,6 @@ const Login = () => {
               className="flex flex-col gap-6"
               action=""
             >
-
               <div>
                 <label className="text-base text-black font-popppind font-semibold mb-2">
                   Email

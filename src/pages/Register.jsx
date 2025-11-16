@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import CommonHead from "../components/Common/CommonHead";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -21,7 +21,7 @@ const Register = () => {
     username: "",
   });
 
-  console.log(formdata);
+  const navigate = useNavigate();
 
   const [allError, setAllError] = useState({
     emailError: "border-border",
@@ -68,6 +68,7 @@ const Register = () => {
                 theme: "light",
                 transition: Bounce,
               });
+              navigate("/login");
               // ...
             });
           })
@@ -96,8 +97,6 @@ const Register = () => {
         }
         // ..
       });
-
-
   };
 
   return (
